@@ -11,26 +11,39 @@ class CombinationFinder {
     /*
      * Saved selections. Used to returning best selection and culling bad branches
      */
-    private int number;
-
-    private int bestPrice = -1;
+    private int bestPrice = -1; /* java has no sum types. Use -1 to indicate infinite price (ie no solution) */
     private InventoryEntity[] bestSelection;
 
-    /* selection stacks for solver */
+    /* Number of items to solve form */
+    private int number;
+    /* selection stacks for solver (current selection and removed selection) */
     private ArrayDeque<InventoryEntity> cSelection = new ArrayDeque<InventoryEntity>();
     private ArrayDeque<InventoryEntity> rSelection = new ArrayDeque<InventoryEntity>();
 
+    /* Current inventory item list*/
     private InventoryEntity[] inventory;
 
+    /**
+     * Constructor to generate solver class
+     * @param items List of InventoryEntity's to solve for
+     * @param itemType Desired Inventory type to solve for
+     * @param number Number of items to solve for
+     */
     public CombinationFinder(List<InventoryEntity> items, String itemType, int number) {
 
         /*
-         * Filter item types and then sort by best choices per dollar, finally store as
-         * array
+         * Filter items to only get desired types and then sort by best choices
+         * per dollar, finally store as array. Creates shallow copy which is
+         * useful for direct comparison to remove items after solving --- which
+         * is good for extensibility.
          */
-        this.inventory = items.stream().filter(s -> s.getType().equalsIgnoreCase(itemType))
-                .sorted(Comparator.comparingInt(s -> s.getPrice() / s.getProperties().length))
-                .toArray(InventoryEntity[]::new);
+        this.inventory = 
+        items
+        .stream()
+        .filter(s -> s.getType().equalsIgnoreCase(itemType))
+        .sorted(Comparator.comparingInt(s -> s.getPrice() / s.getProperties().length))
+        .toArray(InventoryEntity[]::new);
+
         this.number = number;
     }
 
@@ -50,27 +63,53 @@ class CombinationFinder {
         this.solve(cs, 0, 0, this.number);
     }
 
-    public void solve(int[] constraintSum, int cPrice, int n, int number) {
-         // System.out.println("n: " + n + " price: " + cPrice + " bestPrice: " +
-         // this.bestPrice + " solution:" + isSolution(constraintSum, number));
+    /**
+     * Used to solve integer programming problems. Based on solving the
+     * problem:
+     * 
+     *  let X = zero-or-one vector of selected items
+     *  let P = price vector of items
+     *  let Z = properties matrix of items
+     *  let n = number of items to provid
+     * 
+     * minimize(P.X) constrained by:
+     * (Z*X)_i >= n for all i
+     * 
+     * This results in a naiive recursive algoith that for every item in the
+     * array checks what the price would be if we use the item, or remove the
+     * item.
+     * 
+     * 
+     * @param constraintSum integer array of current constraints that are satisfied (equivlent to Z*X).
+     * @param cPrice price of current selection (equivlent to P.X)
+     * @param n index of the current item to check adding inside of this.inventory (ith element of X)
+     * @param number number of items to attempt to create (equivlent to n)
+     */
 
-        /* cull nodes that we know are bad */
+    private void solve(int[] constraintSum, int cPrice, int n, int number) {
+
+        /* cull nodes that we know are bad (current price worse than best known price) */
         if (cPrice > bestPrice && bestPrice != -1) {
             return;
         }
 
-        /* end of tree leaf: found a soultion */
+        /* End of tree: have found a solution to constraints with best known
+         * price. No need to test adding any more items as that would only
+         * increase costs. Saves our current selection as best know price and
+         * combination */
         if (isSolution(constraintSum, number)) {
             this.bestSelection = this.cSelection.stream().toArray(InventoryEntity[]::new);
             this.bestPrice = cPrice;
             return;
         }
 
-        /* edge case: end if tree no more items are left to check */
+        /* End of tree: no more items are left to check in inventory */
         if (n == inventory.length) {
             return;
         }
 
+        /* We need a copy of the current constraints to test adding the next
+         * item */
         int[] constraintSumCopy = constraintSum.clone();
         boolean[] nElementConstraints = this.inventory[n].getProperties();
         for (int i = 0; i < constraintSumCopy.length; i++) {
@@ -79,12 +118,16 @@ class CombinationFinder {
             }
         }
 
+        /* Only check the nodes from adding the next item if it moves us towards
+         * satisfying constraints */
         if (!constraintSumCopy.equals(constraintSum)) {
             cSelection.push(inventory[n]);
+            /* check the right-hand-side: best price if we add the next item */
             solve(constraintSumCopy, cPrice + this.inventory[n].getPrice(), n + 1, number);
             cSelection.pop();
         }
 
+        /* check the left-hand-side: best price if we do not add the next item */
         rSelection.push(inventory[n]);
         solve(constraintSum, cPrice, n + 1, number);
         rSelection.pop();
@@ -93,9 +136,11 @@ class CombinationFinder {
 
     }
 
-    private boolean isSolution(int[] constraints, int value) {
+    /* Checks if the current selection satisfies constrainsts (ie test if
+     * (Z*X)_i >= n for all i) */
+    private boolean isSolution(int[] constraints, int number) {
         for (var c : constraints) {
-            if (c < value) {
+            if (c < number) {
                 return false;
             }
         }
