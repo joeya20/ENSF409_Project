@@ -12,10 +12,10 @@ public class MySQLService {
     private Connection databaseConnection; //connection to SQL
     private ResultSet results; //result set from statement execution
     private String[][] manu = {
-        {"Office Furnishings", "Chairs R Us", "Furniture Goods", "Fine Office Supplies"},
-        {"Academic Desks", "Office Furnishings", "Furniture Goods", "Fine Office Supplies"},
-        {"Office Furnishings", "Furniture Goods", "Fine Office Supplies"},
-        {"Office Furnishings", "Furniture Goods", "Fine Office Supplies"}
+        {"Office Furnishings", "Chairs R Us", "Furniture Goods", "Fine Office Supplies"},       //chair
+        {"Academic Desks", "Office Furnishings", "Furniture Goods", "Fine Office Supplies"},    //desk
+        {"Office Furnishings", "Furniture Goods", "Fine Office Supplies"},                      //lamp
+        {"Office Furnishings", "Furniture Goods", "Fine Office Supplies"}                       //filing
     };
     // private List<String> chairManufacturerData; //all manufacturer data
     // private List<String> deskManufacturerData; //all manufacturer data
@@ -188,18 +188,5 @@ public class MySQLService {
             System.out.println("SQL expception in close");
         }
     }
-    
-    //main method used to test our program
-    /*public static void main(String[] args) {
-
-        MySQLService myJDBC = new MySQLService("jdbc:mysql://localhost/inventory","root","Ju14154830");
-        //myJDBC.initializeConnection();
-        
-        //myJDBC.getData("desk");
-       
-        //myJDBC.updateDatabases("Desk", "D0890");
-        
-        myJDBC.close();
-    }*/
 }
 
