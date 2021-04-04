@@ -11,7 +11,16 @@ public class MySQLService {
     private final String PASSWORD; 
     private Connection databaseConnection; //connection to SQL
     private ResultSet results; //result set from statement execution
-    private List<Manufacturer> manufacturerData; //all manufacturer data
+    private String[][] manu = {
+        {"Office Furnishings", "Chairs R Us", "Furniture Goods", "Fine Office Supplies"},
+        {"Academic Desks", "Office Furnishings", "Furniture Goods", "Fine Office Supplies"},
+        {"Office Furnishings", "Furniture Goods", "Fine Office Supplies"},
+        {"Office Furnishings", "Furniture Goods", "Fine Office Supplies"}
+    };
+    // private List<String> chairManufacturerData; //all manufacturer data
+    // private List<String> deskManufacturerData; //all manufacturer data
+    // private List<String> lampManufacturerData; //all manufacturer data
+    // private List<String> filingManufacturerData; //all manufacturer data
     
     //class constructor
     public MySQLService (String URL, String USER, String PASS) {
@@ -28,36 +37,40 @@ public class MySQLService {
         }
         
         //intializes manufacturerData
-        this.manufacturerData = getManufacturers();
+        // this.chairManufacturerData = getManufacturers("chair");
+        // this.filingManufacturerData = getManufacturers("filing");
+        // this.lampManufacturerData = getManufacturers("lamp");
+        // this.deskManufacturerData = getManufacturers("desk");
     }
 
     //getting all manufacturer data
-    public List<Manufacturer> getManufacturers() {
-        List<Manufacturer> returnList = new ArrayList<Manufacturer>();
+    // public List<String> getManufacturers(String table) {
+    //     List<String> returnList = new ArrayList<String>();
 
-        //try and catch method to catch SQL exception
-        try {                    
-            Statement myStmt = databaseConnection.createStatement(); //statement to use database
-            results = myStmt.executeQuery("SELECT * FROM manufacturer"); //selecting all rows from tableName
+    //     //try and catch method to catch SQL exception
+    //     try {                    
+    //         Statement myStmt = databaseConnection.createStatement(); //statement to use database
+    //         results = myStmt.executeQuery("SELECT DISTINCT manufacturer.Name FROM manufacturer, " + table + " WHERE manufacturer.ManuID=" + table + ".ManuID"); //selecting all rows from tableName
             
-            //declaring boolean arrays of length corresponding to their type
-            while (results.next()){               
-                //System.out.println(results.getString("ManuID") + "  " + results.getString("Name") + "  " + results.getString("Phone") + results.getString("Province"));
-                //initializing Manufacturer object
-                Manufacturer nextManufacturer = new Manufacturer(results.getString("ManuID"), results.getString("Name"), results.getString("Phone"), results.getString("Province"));
-                returnList.add(nextManufacturer); //adding object to returnList
-            }
-            
-            myStmt.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            System.out.println("SQL expception in getData");
-        }
+    //         //declaring boolean arrays of length corresponding to their type
+    //         while (results.next()){
+    //             returnList.add(results.getString("Name")); //adding object to returnList
+    //         }
 
-        //returns list of manufacturer objects
-        return returnList;
+    //         myStmt.close();
+    //     } catch (SQLException ex) {
+    //         ex.printStackTrace();
+    //         System.out.println("SQL expception in getData");
+    //     }
+
+    //     //returns list of manufacturer objects
+    //     return returnList;
+    // }
+
+    public String[][] getManu() {
+        return manu;
     }
-
+    
     //getter methods for URL, USERNAME and PASSWORD
     /*
     public String getUrl() {
@@ -69,6 +82,22 @@ public class MySQLService {
     public String getPassword() {
         return this.PASSWORD;
     }*/
+
+    // public List<String> getChairManufacturerData() {
+    //     return chairManufacturerData;
+    // }
+
+    // public List<String> getDeskManufacturerData() {
+    //     return deskManufacturerData;
+    // }
+
+    // public List<String> getFilingManufacturerData() {
+    //     return filingManufacturerData;
+    // }
+
+    // public List<String> getLampManufacturerData() {
+    //     return lampManufacturerData;
+    // }
 
     //method returns a list of Inventory Entitys from the specified input table fo the inventory database
     //public void getData(String tableName){

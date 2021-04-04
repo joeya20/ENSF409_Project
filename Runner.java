@@ -5,8 +5,8 @@ import java.util.*;
 
 public class Runner {
     private final static String outputFileName = "OrderForm.txt";
-    private final static String USERNAME = "user";
-    private final static String PASSWORD = "pass";
+    private final static String USERNAME = "joeya1";
+    private final static String PASSWORD = "Deanjo_19";
     private final static String URL = "jdbc:mysql://localhost/inventory";
 
     public static void main(String[] args) {
@@ -86,20 +86,34 @@ public class Runner {
             }
 
             //process
-
             solver = new CombinationFinder(db.getData(category), type, amount);
             solver.solve();
-            InventoryEntity[] result = solver.getRemovedItems();
+            InventoryEntity[] results = solver.getRemovedItems();
 
-            //for (int i = 0; i < result.length; i++) {
-            //    System.out.println(result[i].getId());
-            //}
-
-            if(result == null) {
-                System.out.println("success");
+            if(results == null) {
+                String[] manu = null;
+                int i = 0;
+                if(category.equals("chair")) {
+                    manu = db.getManu()[0];
+                }
+                else if(category.equals("desk")){
+                    manu = db.getManu()[1];
+                }
+                else if(category.equals("lamp")) {
+                    manu = db.getManu()[2];
+                }
+                else {
+                    manu = db.getManu()[3];
+                }
+                System.out.print("Order cannot be fulfilled based on current inventory. Suggested manufacturers are ");
+                for (i = 0; i < manu.length-1; i++) {
+                    System.out.print(manu[i] + ", ");
+                }
+                System.out.println(manu[i] + ".");
                 return;
             }
-
+            db.updateDatabases(category, Arrays.asList(results));
+            
             //output
             writer.write("Furniture Order Form");
             writer.newLine();
@@ -117,10 +131,16 @@ public class Runner {
             writer.write("Item(s) Ordered:");
             writer.newLine();
 
-            for (int i = 0; i < result.length; i++) {
-                writer.write(result[i].getId());
+            for (int i = 0; i < results.length; i++) {
+                writer.write(results[i].getId());
                 writer.newLine();
             }
+
+            writer.newLine();
+            writer.write("Total Price: $" + solver.getBestPrice());
+        }
+        catch(IllegalArgumentException e) { //TODO
+            System.out.println("Order cannot be fulfilled based on current inventory. Suggested manufacturers are ");
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -130,7 +150,7 @@ public class Runner {
             try{
                 input.close();
                 writer.close();
-                // db.close();
+                db.close();
             }
             catch(Exception e) {}
         }
