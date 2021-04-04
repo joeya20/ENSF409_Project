@@ -1,3 +1,5 @@
+// package edu.ucalgary.ensf409;
+
 import java.io.*;
 import java.util.*;
 
@@ -5,17 +7,17 @@ public class Runner {
     private final static String outputFileName = "OrderForm.txt";
     private final static String USERNAME = "joeya1";
     private final static String PASSWORD = "Deanjo_19";
-    private final static String URL = null;
+    private final static String URL = "jdbc:mysql://localhost/inventory";
 
     public static void main(String[] args) {
-        // CombinationFinder solver = null;
-        // MySqlService db = null;
+        CombinationFinder solver = null;
+        MySQLService db = null;
         File outputFile = null;
         BufferedWriter writer = null;
         Scanner input = null;
 
         try {
-            // db = new MySqlService(URL, USERNAME, PASSWORD);
+            db = new MySQLService(URL, USERNAME, PASSWORD);
             outputFile = new File(outputFileName);
             writer = new BufferedWriter(new FileWriter(outputFile, false));
             input = new Scanner(System.in);
@@ -84,7 +86,22 @@ public class Runner {
             }
 
             //process
-            
+
+            System.out.println(db.getData(category).size());
+            solver = new CombinationFinder(db.getData(category), type, amount);
+            solver.solve();
+            InventoryEntity[] result = solver.getRemovedItems();
+
+            System.out.println(result.length);
+
+            for (int i = 0; i < result.length; i++) {
+                System.out.println(result[i].getId());
+            }
+            if(result == null) {
+                System.out.println("success");
+                return;
+            }
+
             //output
             writer.write("Furniture Order Form");
             writer.newLine();
@@ -101,6 +118,11 @@ public class Runner {
             writer.newLine();
             writer.write("Item(s) Ordered:");
             writer.newLine();
+
+            for (int i = 0; i < result.length; i++) {
+                writer.write(result[i].getId());
+                writer.newLine();
+            }
         }
         catch(Exception e) {
             e.printStackTrace();

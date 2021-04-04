@@ -1,5 +1,4 @@
-
-package edu.ucalgary.ensf409;
+// package edu.ucalgary.ensf409;
 
 //Manufacturing class
 public class Manufacturer {

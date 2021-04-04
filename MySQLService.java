@@ -1,5 +1,5 @@
+// package edu.ucalgary.ensf409;
 
-package edu.ucalgary.ensf409;
 import java.util.*;
 import java.sql.*;
 
@@ -133,7 +133,7 @@ public class MySQLService {
             //for loop going through each item to be deleted
             for (int i = 0; i < removeItems.size(); i++) {
                 //setting the value of the prepared statement to the ID we want to delete
-                myStmt.setString(1, removeItems.get(i).id);
+                myStmt.setString(1, removeItems.get(i).getId());
                 //myStmt.setString(1, removeItems);
                 myStmt.executeUpdate(); //executing the deletion of such items in inventory in database
             }

@@ -103,23 +103,4 @@ class CombinationFinder {
         }
         return true;
     }
-
-    public static void main(String[] s) {
-        var iarr = new ArrayList<InventoryEntity>();
-        iarr.add(new InventoryEntity("1", 75, new String[] { "Y", "N", "N", "N" }));
-        iarr.add(new InventoryEntity("2", 50, new String[] { "N", "Y", "N", "Y" }));
-        iarr.add(new InventoryEntity("3", 75, new String[] { "N", "N", "Y", "N" }));
-        iarr.add(new InventoryEntity("4", 100, new String[] { "Y", "N", "Y", "Y" }));
-
-        CombinationFinder c = new CombinationFinder(iarr, "", 1);
-        int[] cs = new int[iarr.get(0).getProperties().length];
-        c.solve(cs, 0, 0, 1);
-        System.out.println("ANS: " + c.getBestPrice());
-        for (var item : c.getRemovedItems()) {
-            System.out.println(item.getId());
-        }
-        // c.solve(cs, 0);
-
-    }
-
 }
