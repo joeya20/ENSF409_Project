@@ -32,7 +32,7 @@ class CombinationFinder {
          * Filter item types and then sort by best choices per dollar, finally store as
          * array
          */
-        this.inventory = items.stream().filter(s -> s.getType().equals(itemType))
+        this.inventory = items.stream().filter(s -> s.getType().equalsIgnoreCase(itemType))
                 .sorted(Comparator.comparingInt(s -> s.getPrice() / s.getProperties().length))
                 .toArray(InventoryEntity[]::new);
         this.number = number;
@@ -53,8 +53,8 @@ class CombinationFinder {
     }
 
     public void solve(int[] constraintSum, int cPrice, int n, int number) {
-        // System.out.println("n: " + n + " price: " + cPrice + " bestPrice: " +
-        // this.bestPrice + " solution:" + isSolution(constraintSum, number));
+         // System.out.println("n: " + n + " price: " + cPrice + " bestPrice: " +
+         // this.bestPrice + " solution:" + isSolution(constraintSum, number));
 
         /* cull nodes that we know are bad */
         if (cPrice > bestPrice && bestPrice != -1) {
