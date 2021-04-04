@@ -1,0 +1,12 @@
+Furniture Order Form
+
+Faculty: 
+Contact: 
+Date: 
+
+Request: desk lamp, 1
+
+Item(s) Ordered:
+L564
+
+Total Price: $20

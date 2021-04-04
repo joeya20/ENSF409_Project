@@ -1,3 +1,8 @@
+/**
+ * @author  Joey Ah-kiow, Jordan Lonneberg, Juan Villarreal, Mustakim Rahman
+ * @version 1.0
+ */
+
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.List;
