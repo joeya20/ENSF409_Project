@@ -5,8 +5,8 @@ import java.util.*;
 
 public class Runner {
     private final static String outputFileName = "OrderForm.txt";
-    private final static String USERNAME = "joeya1";
-    private final static String PASSWORD = "Deanjo_19";
+    private final static String USERNAME = "user";
+    private final static String PASSWORD = "pass";
     private final static String URL = "jdbc:mysql://localhost/inventory";
 
     public static void main(String[] args) {
@@ -87,16 +87,14 @@ public class Runner {
 
             //process
 
-            System.out.println(db.getData(category).size());
             solver = new CombinationFinder(db.getData(category), type, amount);
             solver.solve();
             InventoryEntity[] result = solver.getRemovedItems();
 
-            System.out.println(result.length);
+            //for (int i = 0; i < result.length; i++) {
+            //    System.out.println(result[i].getId());
+            //}
 
-            for (int i = 0; i < result.length; i++) {
-                System.out.println(result[i].getId());
-            }
             if(result == null) {
                 System.out.println("success");
                 return;
