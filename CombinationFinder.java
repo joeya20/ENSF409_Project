@@ -1,9 +1,5 @@
-import java.lang.reflect.Array;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Stack;
-import java.util.stream.Collectors;
 import java.util.List;
 
 /**
@@ -38,11 +34,19 @@ class CombinationFinder {
         this.number = number;
     }
 
-    public int getBestPrice() {
+    public int getBestPrice() throws IllegalAccessException {
+        if (this.bestSelection == null) {
+            throw new IllegalAccessException("No solution for for solver");
+        }
+
         return this.bestPrice;
     }
 
-    public InventoryEntity[] getRemovedItems() {
+    public InventoryEntity[] getRemovedItems() throws IllegalAccessException {
+        if (this.bestSelection == null) {
+            throw new IllegalAccessException("No solution for for solver");
+        }
+
         return this.bestSelection;
     }
 
