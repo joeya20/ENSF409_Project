@@ -89,15 +89,16 @@ public class Runner {
 
             solver = new CombinationFinder(db.getData(category), type, amount);
             solver.solve();
-            InventoryEntity[] result = solver.getRemovedItems();
+            InventoryEntity[] results = null;
+            int resultsPrice;            
 
-            //for (int i = 0; i < result.length; i++) {
-            //    System.out.println(result[i].getId());
-            //}
-
-            if(result == null) {
-                System.out.println("success");
-                return;
+            try {
+                results = solver.getRemovedItems();
+                resultsPrice = solver.getBestPrice();
+            } catch (IllegalAccessException e) {
+                System.out.println("No items in the inventory can create the item(s) selected.");
+                // do suggested manufact. here
+                System.exit(0);
             }
 
             //output
@@ -117,8 +118,8 @@ public class Runner {
             writer.write("Item(s) Ordered:");
             writer.newLine();
 
-            for (int i = 0; i < result.length; i++) {
-                writer.write(result[i].getId());
+            for (int i = 0; i < results.length; i++) {
+                writer.write(results[i].getId());
                 writer.newLine();
             }
         }
