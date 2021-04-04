@@ -44,7 +44,9 @@ class CombinationFinder {
 
     public void solve() {
 
-        int[] cs = new int[inventory.length];
+        assert(inventory.length > 0);
+
+        int[] cs = new int[inventory[0].getProperties().length];
         this.solve(cs, 0, 0, this.number);
     }
 
