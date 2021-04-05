@@ -4,9 +4,10 @@ Faculty:
 Contact: 
 Date: 
 
-Request: desk lamp, 1
+Request: task chair, 1
 
 Item(s) Ordered:
-L564
+C3405
+C0914
 
-Total Price: $20
+Total Price: $150
