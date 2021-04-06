@@ -98,7 +98,7 @@ public class MySQLService {
             
             myStmt.close(); //closing statement
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            // ex.printStackTrace();
             System.out.println("SQL expception in getData");
         }
 

@@ -73,4 +73,25 @@ public class InventoryEntity {
 	public void setManuId(String manuID) {
 		this.manuID = manuID;
 	}
+
+	public String toString() {
+		StringBuilder returnVal = new StringBuilder();
+		returnVal.append(id + " " + type + " ");
+
+		for(int i = 0; i < this.properties.length; i++) {
+			returnVal.append(this.properties[i] + " ");
+		}
+
+		returnVal.append(price + " " + manuID);
+
+		return returnVal.toString();
+	}
+
+	@Override
+	public boolean equals(Object toCompare) {
+		InventoryEntity entity = (InventoryEntity)toCompare;
+
+		return this.toString().equals(entity.toString());
+	}
 }
+
