@@ -1,2 +1,2 @@
 # ENSF409_Project
-ENSF 409 final project by Joey Ah-kiow, Juan Villarreal, Mustkim Rahman, Jordan Lonneberg
+ENSF 409 final project by Joey Ah-kiow, Juan Villarreal, Mustakim Rahman, Jordan Lonneberg
