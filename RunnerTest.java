@@ -12,6 +12,9 @@ public class RunnerTest {
     public RunnerTest() {
     }
     
+    /**
+     * Test to verify that the data obtained from MySQLService is valid when using a valid Table name.
+     */
     @Test
     public void testGetChairData() {
         System.out.println("getChairData");
@@ -48,6 +51,9 @@ public class RunnerTest {
         assertArrayEquals("Expected and obtained lists are not identical", expResult.toArray(), result.toArray());   //expResult[i].tostring.equals(result[i].toString())
     }
 
+    /**
+     * Test to verify that MySQLService returns an empty List<InventoryEntity> when an invalid table name is supplied.
+     */
     @Test
     public void testGetDataInvalidTable() {
         System.out.println("getDataInvalidTable");
@@ -66,6 +72,9 @@ public class RunnerTest {
     }
 }
 
+/**
+ * Comparator Class to sort lists of InventoryEntity by IDs.
+ */
 class SortInventoryEntitybyID implements Comparator<InventoryEntity> {
     //Compare using the InventoryEntity's ID
     public int compare(InventoryEntity a, InventoryEntity b) {
