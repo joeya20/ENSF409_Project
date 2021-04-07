@@ -9,11 +9,11 @@ import java.io.*;
 import java.util.*;
 
 public class Runner {
-    private final static String outputFileName = "OrderForm.txt";
+    private final static String OUTPUTFILENAME = "OrderForm.txt";
     private final static String USERNAME = "joeya1";
     private final static String PASSWORD = "Deanjo_19";
     private final static String URL = "jdbc:mysql://localhost/inventory";
-    private static File outputFile = new File(outputFileName);
+    private static File outputFile = new File(OUTPUTFILENAME);
 
     /**
      * Responsible for getting the user input and calling helper function processInput

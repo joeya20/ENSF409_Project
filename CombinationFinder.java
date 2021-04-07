@@ -11,8 +11,7 @@ import java.util.List;
  * Class used to solve satifiably problem of if an item can be made, and for
  * what price.
  */
-class CombinationFinder {
-
+public class CombinationFinder {
     /*
      * Saved selections. Used to returning best selection and culling bad branches
      */
@@ -21,6 +20,7 @@ class CombinationFinder {
 
     /* Number of items to solve form */
     private int number;
+
     /* selection stacks for solver (current selection and removed selection) */
     private ArrayDeque<InventoryEntity> cSelection = new ArrayDeque<InventoryEntity>();
     private ArrayDeque<InventoryEntity> rSelection = new ArrayDeque<InventoryEntity>();

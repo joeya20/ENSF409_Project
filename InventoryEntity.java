@@ -29,7 +29,7 @@ public class InventoryEntity {
 		setType(type);
 		setProperties(properties);
 		setPrice(price);
-		setManuId(manuID);
+		setManuID(manuID);
 	}
 
 	//Getter methods 
@@ -49,7 +49,7 @@ public class InventoryEntity {
 		return price;
 	}
 
-	public String getManuId() {
+	public String getManuID() {
 		return manuID;
 	}
 	
@@ -70,7 +70,7 @@ public class InventoryEntity {
 		this.price = price;
 	}
 
-	public void setManuId(String manuID) {
+	public void setManuID(String manuID) {
 		this.manuID = manuID;
 	}
 
