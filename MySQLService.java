@@ -18,12 +18,6 @@ public class MySQLService {
     private final String PASSWORD; 
     private Connection databaseConnection; //connection to SQL
     private ResultSet results; //result set from statement execution
-    private String[][] manu = { //list of manufacturers per furniture type
-        {"Office Furnishings", "Chairs R Us", "Furniture Goods", "Fine Office Supplies"},       //chair
-        {"Academic Desks", "Office Furnishings", "Furniture Goods", "Fine Office Supplies"},    //desk
-        {"Office Furnishings", "Furniture Goods", "Fine Office Supplies"},                      //lamp
-        {"Office Furnishings", "Furniture Goods", "Fine Office Supplies"}                       //filing
-    };
 
     /**
      * class constructor to set values fields and initialize database connection
@@ -47,10 +41,10 @@ public class MySQLService {
     }
 
     /**
-     * Getter method for manu
-     * @return string array of manufactuers that make items in category
+     * Get manufactures that create items in category
+     * @return string array of manufacturers that make items in category
      */
-    public static String[] getManufacturers(String category) {
+    public static String[] getManu(String category) {
 
         String[] result;
 
@@ -137,16 +131,15 @@ public class MySQLService {
         //try and catch method to catch SQL exception                  
         try {
             //string for prepared statement to delete the items of given ID from the table given
-            String query = "DELETE FROM ? WHERE ID = ?";
+            String query = "DELETE FROM " + table + "  WHERE ID = ?";
             PreparedStatement myStmt = databaseConnection.prepareStatement(query);
 
             /* Set desired table to delete from */
-            myStmt.setString(1, table);
 
             //for loop going through each item to be deleted
             for (InventoryEntity removeItem : removeItems) {
                 //setting the value of the prepared statement to the ID we want to delete
-                myStmt.setString(2, removeItem.getId());
+                myStmt.setString(1, removeItem.getId());
                 myStmt.executeUpdate(); //executing the deletion of such items in inventory in database
             }
             

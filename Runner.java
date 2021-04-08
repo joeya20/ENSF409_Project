@@ -10,8 +10,8 @@ import java.util.*;
 
 public class Runner {
     private final static String OUTPUTFILENAME = "OrderForm.txt";
-    private final static String USERNAME = "scm";
-    private final static String PASSWORD = "ensf409";
+    private final static String USERNAME = "user";
+    private final static String PASSWORD = "pass";
     private final static String URL = "jdbc:mysql://localhost/inventory";
     private static File outputFile = new File(OUTPUTFILENAME);
 
@@ -88,7 +88,7 @@ public class Runner {
         } catch (IllegalArgumentException e) { //TODO
             System.out.println("Order cannot be fulfilled based on current inventory. Suggested manufacturers are ");
         } catch (Exception e) {
-            e.printStackTrace();
+
         } finally {
             //close scanner quietly
             try {
@@ -111,18 +111,25 @@ public class Runner {
      * @param amount   Furniture amount user input
      */
     public static void processInput(String category, String type, int amount) {
-        /* create connection to  mySQL database */
+        //check if all arguments are valid
+        if((!isValidCategory(category.toLowerCase())) || 
+            (!Arrays.asList(getCategoryTypes(category.toLowerCase())).contains(type.toLowerCase())) || 
+            (!isValidAmount(Integer.toString(amount)))) {
+
+            throw new IllegalArgumentException();
+        }
+        
+        // establish connection to database
         MySQLService db = new MySQLService(URL, USERNAME, PASSWORD);
-
-        /* instantiate a CombinationFinder object using data from the database and user input */
-        CombinationFinder solver = new CombinationFinder(db.getData(category), type, amount);
+        //instantiate a CombinationFinder object using data from the database and user input
+        CombinationFinder solver = new CombinationFinder(db.getData(category), type, amount); 
         solver.solve(); //find a valid combination
-        InventoryEntity[] results = solver.getRemovedItems(); //get the Items that fulfill the order, returns null for no solution
+        InventoryEntity[] results = solver.getRemovedItems();   //get the Items that fulfill the order, returns null for no solution
 
-        if (results == null) {   //if no solution was found
-            String[] manufacturers = getManufacturers(category);
+        if(results == null) {   //if no solution was found
+            String[] manufacturers = db.getManu(category);
 
-            // output recommended manufactures message and end program
+            // output error message and end program
             System.out.print("Order cannot be fulfilled based on current inventory. Suggested manufacturers are ");
             for (int i = 0; i < manufacturers.length; i++) {
 
@@ -148,7 +155,6 @@ public class Runner {
 
             //Generate OrderForm.txt
             generateOrderForm(outputFile, category, type, amount, results, solver.getBestPrice());
-
             System.out.println("Order form created!");
         }
 
@@ -185,7 +191,8 @@ public class Runner {
             writer.write("Date: ");
             writer.newLine();
             writer.newLine();
-            writer.write("Request: " + type + " " + category + ", " + amount);
+            writer.write("Request: " + type.substring(0,1).toUpperCase() + type.substring(1).toLowerCase() + " " + 
+            category.substring(0,1).toUpperCase() + category.substring(1).toLowerCase() + ", " + amount);
             writer.newLine();
             writer.newLine();
             writer.write("Item(s) Ordered:");
@@ -268,38 +275,6 @@ public class Runner {
                 break;
             default:
                 throw new IllegalArgumentException("Invalid category supplied to getCategoryTypes");
-        }
-
-        return result;
-    }
-
-    /**
-     * Returns the valid types of furniture for the supplied furniture category.
-     * Returns null if the supplied furniture category is invalid
-     *
-     * @param category a string containing the category with no extra whitespace
-     * @return a string array containing all manufacturers of the category
-     * @throws IllegalArgumentException if category is none of the four valid categories
-     */
-    public static String[] getManufacturers(String category) {
-
-        String[] result;
-
-        switch (category.toLowerCase()) {
-            case "chair":
-                result = new String[]{"Office Furnishings", "Chairs R Us", "Furniture Goods", "Fine Office Supplies"};
-                break;
-            case "desk":
-                result = new String[]{"Academic Desks", "Office Furnishings", "Furniture Goods", "Fine Office Supplies"};
-                break;
-            case "filing":
-                result = new String[]{"Office Furnishings", "Furniture Goods", "Fine Office Supplies"};
-                break;
-            case "lamp":
-                result = new String[]{"Office Furnishings", "Furniture Goods", "Fine Office Supplies"};
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid category supplied to getManufactures");
         }
 
         return result;

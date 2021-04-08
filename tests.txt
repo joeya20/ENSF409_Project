@@ -1,8 +1,0 @@
-1. Runner
-	- processInput()
-	- generateOrderForm()
-2. CombinationFinder
-	- solve()
-3. MySQLService
-	- getData("chair"), getData("CHAIR"), getData("")
-	- updateDatabases(...);
