@@ -40,7 +40,7 @@ public class Runner {
                 } else if (isValidCategory(category)) {    //break if category is valid
                     break;
                 } else {  //else print invalid category and re-prompt an input
-                    System.out.print("Invalid furniture Category! ");
+                    System.out.print("Invalid furniture category! ");
                 }
             }
 
@@ -77,10 +77,9 @@ public class Runner {
                     amount = Integer.parseInt(placeholder);
                     break;
                 } else {  //print invalid amount and re-prompt an input
-                    System.out.print("Invalid furniture type! ");
+                    System.out.print("Invalid furniture amount! ");
                 }
             }
-
             //process the user input
             processInput(category, type, amount);
         }
@@ -141,7 +140,6 @@ public class Runner {
 
             //Generate OrderForm.txt
             generateOrderForm(outputFile, category, type, amount, results, solver.getBestPrice());
-            System.out.println("Order form created!");
         }
 
         //close db connection
