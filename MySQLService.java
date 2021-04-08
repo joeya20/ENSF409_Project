@@ -1,5 +1,5 @@
 /**
- * @author  Joey Ah-kiow, Jordan Lonneberg, Juan Villarreal, Mustakim Rahman
+ * @author Joey Ah-kiow, Jordan Lonneberg, Juan Villarreal, Mustakim Rahman
  * @version 1.0
  */
 
@@ -13,9 +13,9 @@ import java.sql.*;
  */
 public class MySQLService {
     //class fields
-    private final String URL; 
-    private final String USERNAME; 
-    private final String PASSWORD; 
+    private final String URL;
+    private final String USERNAME;
+    private final String PASSWORD;
     private Connection databaseConnection; //connection to SQL
     private ResultSet results; //result set from statement execution
 
@@ -25,19 +25,19 @@ public class MySQLService {
      * @param username string of username
      * @param password string of password
      */
-    public MySQLService (String url, String username, String password) {
+    public MySQLService(String url, String username, String password) {
         this.URL = url;
         this.USERNAME = username;
         this.PASSWORD = password;
 
         //initialize connection to the SQL database, try and catch method to catch SQL exception
-        try{
+        try {
             this.databaseConnection = DriverManager.getConnection(this.URL, this.USERNAME, this.PASSWORD);
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("SQL exception in initializeConnection");
         }
-        
+
     }
 
     /**
@@ -73,9 +73,9 @@ public class MySQLService {
      * @param tableName string of the furniture table to be extracted
      * @return a list of all the items in the extracted table, each row as an InventoryEntity object in the list
      */
-    public List<InventoryEntity> getData(String tableName){
+    public List<InventoryEntity> getData(String tableName) {
         List<InventoryEntity> returnList = new ArrayList<InventoryEntity>();
-        
+
         //try and catch method to catch SQL exception
         try {
 
@@ -83,20 +83,18 @@ public class MySQLService {
              * Select all entries from the desired table
              */
             String query = "SELECT * FROM ?";
-            PreparedStatement myStmt  = databaseConnection.prepareStatement(query);
+            PreparedStatement myStmt = databaseConnection.prepareStatement(query);
             myStmt.setString(1, tableName);
             results = myStmt.executeQuery("SELECT * FROM " + tableName);
-            
+
             /* Declaring boolean arrays of length corresponding to their table properties */
-            while (results.next()){               
+            while (results.next()) {
                 boolean[] properties;
-                if (tableName.equalsIgnoreCase("chair")){
+                if (tableName.equalsIgnoreCase("chair")) {
                     properties = new boolean[4]; //4 chair properties
-                }
-                else if (tableName.equalsIgnoreCase("desk") || tableName.equalsIgnoreCase("filing")) {
+                } else if (tableName.equalsIgnoreCase("desk") || tableName.equalsIgnoreCase("filing")) {
                     properties = new boolean[3]; //3 desk or filing properties
-                }
-                else {
+                } else {
                     properties = new boolean[2]; //2 lamp properties
                 }
 
@@ -109,7 +107,7 @@ public class MySQLService {
                 InventoryEntity nextElement = new InventoryEntity(results.getString("ID"), results.getString("Type"), properties, results.getInt("Price"), results.getString("ManuID"));
                 returnList.add(nextElement); //adding object to returnList
             }
-            
+
             myStmt.close(); //closing statement
         } catch (SQLException ex) {
             // ex.printStackTrace();
@@ -120,14 +118,14 @@ public class MySQLService {
         return returnList;
     }
 
-    
+
     /**
      * method to delete items of given table from the inventory database 
      * @param table string of the furniture table to be extracted
      * @param removeItems list of all the items to be removed from the database, each element in the list 
      * is an InventoryEntity object corresponding to a row from the specified table of the database
      */
-    public void updateDatabases(String table, List<InventoryEntity> removeItems){
+    public void updateDatabases(String table, List<InventoryEntity> removeItems) {
         //try and catch method to catch SQL exception                  
         try {
             //string for prepared statement to delete the items of given ID from the table given
@@ -142,7 +140,7 @@ public class MySQLService {
                 myStmt.setString(1, removeItem.getId());
                 myStmt.executeUpdate(); //executing the deletion of such items in inventory in database
             }
-            
+
             myStmt.close(); //releasing the open statement
 
         } catch (SQLException ex) {
@@ -150,8 +148,8 @@ public class MySQLService {
             System.out.println("SQL exception in updateDatabases");
         }
 
-    }    
-    
+    }
+
 
     /**
      * method to release open results and connections that have been open 
