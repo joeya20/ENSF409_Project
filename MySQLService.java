@@ -21,8 +21,7 @@ public class MySQLService {
     private String[][] manu = { //list of manufacturers per furniture type
         {"Office Furnishings", "Chairs R Us", "Furniture Goods", "Fine Office Supplies"},       //chair
         {"Academic Desks", "Office Furnishings", "Furniture Goods", "Fine Office Supplies"},    //desk
-        {"Office Furnishings", "Furniture Goods", "Fine Office Supplies"},                      //lamp
-        {"Office Furnishings", "Furniture Goods", "Fine Office Supplies"}                       //filing
+        {"Office Furnishings", "Furniture Goods", "Fine Office Supplies"}                      //lamp or filing
     };
 
     /**
@@ -50,8 +49,21 @@ public class MySQLService {
      * Getter method for manu
      * @return two-dimensional string array of manu containing all the manufacturers per furniture type
      */
-    public String[][] getManu() {
-        return manu;
+    public String[] getManu(String category) {
+
+        if(category.toLowerCase().equals("chair")) {  //get valid chair manufacturers
+            return manu[0]; 
+        }
+        else if(category.toLowerCase().equals("desk")){ //get valid desk manufacturers
+            return manu[1]; 
+        }
+        else if(category.toLowerCase().equals("lamp") || 
+            category.toLowerCase().equals("filing")) {  //get valid lamp/filing manufacturers
+            return manu[2];
+        }
+        else {
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -98,7 +110,7 @@ public class MySQLService {
             
             myStmt.close(); //closing statement
         } catch (SQLException ex) {
-            // ex.printStackTrace();
+            ex.printStackTrace();
             System.out.println("SQL expception in getData");
         }
 

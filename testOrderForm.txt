@@ -4,11 +4,10 @@ Faculty:
 Contact: 
 Date: 
 
-Request: Mesh Chair, 1
+Request: Test type Test category, 10
 
 Item(s) Ordered:
-C8138
-C6748
-C9890
+ID1
+ID2
 
-Total Price: $200
+Total Price: $100

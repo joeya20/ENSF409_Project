@@ -92,9 +92,6 @@ public class Runner {
             //process the user input
             processInput(category, type, amount);
         }
-        catch(IllegalArgumentException e) { //TODO
-            System.out.println("Order cannot be fulfilled based on current inventory. Suggested manufacturers are ");
-        }
         catch(Exception e) {
             e.printStackTrace();
         }
@@ -114,32 +111,25 @@ public class Runner {
      * @param amount Furniture amount user input
      */
     public static void processInput(String category, String type, int amount) {
-        //instantiate a CombinationFinder object using data from the database and user input
-       
+
+        //check if all arguments are valid
+        if((!isValidCategory(category.toLowerCase())) || 
+            (!Arrays.asList(getCategoryTypes(category.toLowerCase())).contains(type.toLowerCase())) || 
+            (!isValidAmount(Integer.toString(amount)))) {
+
+            throw new IllegalArgumentException();
+        }
+        
+        // establish connection to database
         MySQLService db = new MySQLService(URL, USERNAME, PASSWORD);
+        //instantiate a CombinationFinder object using data from the database and user input
         CombinationFinder solver = new CombinationFinder(db.getData(category), type, amount); 
         solver.solve(); //find a valid combination
         InventoryEntity[] results = solver.getRemovedItems();   //get the Items that fulfill the order, returns null for no solution
 
         if(results == null) {   //if no solution was found
-            String[] manu = null;
+            String[] manu = db.getManu(category);
             int i = 0;
-
-            if(category.equals("chair")) {  //get valid chair manufacturers
-                manu = db.getManu()[0]; 
-            }
-            else if(category.equals("desk")){ //get valid desk manufacturers
-                manu = db.getManu()[1];
-            }
-            else if(category.equals("lamp")) {  //get valid lamp manufacturers
-                manu = db.getManu()[2];
-            }
-            else if(category.equals("filing")){  //get valid filing manufacturers
-                manu = db.getManu()[3];
-            }
-            else {
-                throw new IllegalArgumentException();
-            }
 
             // output error message and end program
             System.out.print("Order cannot be fulfilled based on current inventory. Suggested manufacturers are ");
@@ -162,8 +152,6 @@ public class Runner {
     
             //Generate OrderForm.txt
             generateOrderForm(outputFile, category, type, amount, results, solver.getBestPrice());
-    
-            System.out.println("Order form created!");
         }
         
         //close db connection
@@ -196,7 +184,8 @@ public class Runner {
             writer.write("Date: ");
             writer.newLine();
             writer.newLine();
-            writer.write("Request: " + type + " " + category + ", " + amount);
+            writer.write("Request: " + type.substring(0,1).toUpperCase() + type.substring(1).toLowerCase() + " " + 
+            category.substring(0,1).toUpperCase() + category.substring(1).toLowerCase() + ", " + amount);
             writer.newLine();
             writer.newLine();
             writer.write("Item(s) Ordered:");
