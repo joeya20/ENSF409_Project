@@ -141,7 +141,6 @@ public class Runner {
 
             //Generate OrderForm.txt
             generateOrderForm(outputFile, category, type, amount, results, solver.getBestPrice());
-            System.out.println("Order form created!");
         }
 
         //close db connection
