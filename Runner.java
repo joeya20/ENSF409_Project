@@ -9,24 +9,22 @@ import java.io.*;
 import java.util.*;
 
 public class Runner {
-    private final static String OUTPUTFILENAME = "OrderForm.txt";
+    private final static String OUTPUT_FILENAME = "OrderForm.txt";
     private final static String USERNAME = "user";
     private final static String PASSWORD = "pass";
     private final static String URL = "jdbc:mysql://localhost/inventory";
-    private static File outputFile = new File(OUTPUTFILENAME);
+    private final static File outputFile = new File(OUTPUT_FILENAME);
 
     /**
      * Responsible for getting the user input and calling helper function processInput
      */
     public static void main(String[] args) {
-        Scanner input = null;
 
-        try {
-            input = new Scanner(System.in);
-            String category = null;
-            String type = null;
-            String[] validFurnitureTypes = null;
-            int amount = 0;
+        try (Scanner input = new Scanner(System.in)) {
+            String category;
+            String type;
+            String[] validFurnitureTypes;
+            int amount;
 
             //get furniture category
             while (true) {
@@ -41,7 +39,7 @@ public class Runner {
                     return;
                 } else if (isValidCategory(category)) {    //break if category is valid
                     break;
-                } else {  //else print invalid category and reprompt an input
+                } else {  //else print invalid category and re-prompt an input
                     System.out.print("Invalid furniture Category! ");
                 }
             }
@@ -55,7 +53,7 @@ public class Runner {
 
                 //print all valid types of the category as possibilities
                 for (int i = 0; i < validFurnitureTypes.length; i++) {
-                    System.out.println(String.valueOf(i + 1) + ". " + validFurnitureTypes[i]);
+                    System.out.println((i + 1) + ". " + validFurnitureTypes[i]);
                 }
                 type = input.nextLine().toLowerCase().trim();
 
@@ -63,7 +61,7 @@ public class Runner {
                     return;
                 } else if (Arrays.asList(validFurnitureTypes).contains(type)) {  //break if the input was one of the valid furniture types
                     break;
-                } else {  //print invalid type and reprompt an input
+                } else {  //print invalid type and re-prompt an input
                     System.out.print("Invalid furniture type! ");
                 }
             }
@@ -78,7 +76,7 @@ public class Runner {
                 } else if (isValidAmount(placeholder)) {   //break if the input was a valid amount
                     amount = Integer.parseInt(placeholder);
                     break;
-                } else {  //print invalid amount and reprompt an input
+                } else {  //print invalid amount and re-prompt an input
                     System.out.print("Invalid furniture type! ");
                 }
             }
@@ -87,16 +85,6 @@ public class Runner {
             processInput(category, type, amount);
         } catch (IllegalArgumentException e) { //TODO
             System.out.println("Order cannot be fulfilled based on current inventory. Suggested manufacturers are ");
-        } catch (Exception e) {
-
-        } finally {
-            //close scanner quietly
-            try {
-                if (input != null) {
-                    input.close();
-                }
-            } catch (Exception e) {
-            }
         }
     }
 
@@ -112,22 +100,22 @@ public class Runner {
      */
     public static void processInput(String category, String type, int amount) {
         //check if all arguments are valid
-        if((!isValidCategory(category.toLowerCase())) || 
-            (!Arrays.asList(getCategoryTypes(category.toLowerCase())).contains(type.toLowerCase())) || 
-            (!isValidAmount(Integer.toString(amount)))) {
+        if ((!isValidCategory(category.toLowerCase())) ||
+                (!Arrays.asList(getCategoryTypes(category.toLowerCase())).contains(type.toLowerCase())) ||
+                (!isValidAmount(Integer.toString(amount)))) {
 
             throw new IllegalArgumentException();
         }
-        
+
         // establish connection to database
         MySQLService db = new MySQLService(URL, USERNAME, PASSWORD);
         //instantiate a CombinationFinder object using data from the database and user input
-        CombinationFinder solver = new CombinationFinder(db.getData(category), type, amount); 
+        CombinationFinder solver = new CombinationFinder(db.getData(category), type, amount);
         solver.solve(); //find a valid combination
         InventoryEntity[] results = solver.getRemovedItems();   //get the Items that fulfill the order, returns null for no solution
 
-        if(results == null) {   //if no solution was found
-            String[] manufacturers = db.getManu(category);
+        if (results == null) {   //if no solution was found
+            String[] manufacturers = MySQLService.getManu(category);
 
             // output error message and end program
             System.out.print("Order cannot be fulfilled based on current inventory. Suggested manufacturers are ");
@@ -147,7 +135,7 @@ public class Runner {
 
             //output to command line
             System.out.print("Purchase ");
-            int i = 0;
+            int i;
             for (i = 0; i < results.length - 1; i++) {
                 System.out.print(results[i].getId() + ", ");
             }
@@ -191,15 +179,15 @@ public class Runner {
             writer.write("Date: ");
             writer.newLine();
             writer.newLine();
-            writer.write("Request: " + type.substring(0,1).toUpperCase() + type.substring(1).toLowerCase() + " " + 
-            category.substring(0,1).toUpperCase() + category.substring(1).toLowerCase() + ", " + amount);
+            writer.write("Request: " + type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase() + " " +
+                    category.substring(0, 1).toUpperCase() + category.substring(1).toLowerCase() + ", " + amount);
             writer.newLine();
             writer.newLine();
             writer.write("Item(s) Ordered:");
             writer.newLine();
 
-            for (int i = 0; i < results.length; i++) {
-                writer.write(results[i].getId());
+            for (InventoryEntity result : results) {
+                writer.write(result.getId());
                 writer.newLine();
             }
 
