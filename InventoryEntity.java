@@ -18,11 +18,11 @@ public class InventoryEntity {
 
 	/**
 	 * Constructor to call setter method for each argument
-	 * @param id
-	 * @param type
-	 * @param properties
-	 * @param price
-	 * @param manuID
+	 * @param id table id string of item
+	 * @param type table type of item
+	 * @param properties table properties of item
+	 * @param price price of item
+	 * @param manuID manufacturer ID of item
 	 */
 	public InventoryEntity(String id, String type, boolean[] properties, int price, String manuID) {
 		setId(id);
@@ -78,8 +78,8 @@ public class InventoryEntity {
 		StringBuilder returnVal = new StringBuilder();
 		returnVal.append(id + " " + type + " ");
 
-		for(int i = 0; i < this.properties.length; i++) {
-			returnVal.append(this.properties[i] + " ");
+		for (boolean property : this.properties) {
+			returnVal.append(property + " ");
 		}
 
 		returnVal.append(price + " " + manuID);
