@@ -83,8 +83,6 @@ public class Runner {
 
             //process the user input
             processInput(category, type, amount);
-        } catch (IllegalArgumentException e) { //TODO
-            System.out.println("Order cannot be fulfilled based on current inventory. Suggested manufacturers are ");
         }
     }
 
