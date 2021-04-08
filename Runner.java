@@ -114,7 +114,11 @@ public class Runner {
         solver.solve(); //find a valid combination
         InventoryEntity[] results = solver.getRemovedItems();   //get the Items that fulfill the order, returns null for no solution
 
+<<<<<<< Updated upstream
         if (results == null) {   //if no solution was found
+=======
+        if(results == null) {   //if no solution was found
+>>>>>>> Stashed changes
             String[] manufacturers = MySQLService.getManu(category);
 
             // output error message and end program
