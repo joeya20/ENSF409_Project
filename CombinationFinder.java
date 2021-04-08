@@ -81,10 +81,13 @@ public class CombinationFinder {
      * <p>
      * minimize(P.X) constrained by:
      * (Z*X)_i >= n for all i
+     *
      * <p>
      * This results in a naive recursive algorithm that for every item in the
      * array checks what the price would be if we use the item, or remove the
-     * item.
+     * item. Although the new inventory.sql file has been updated to make all
+     * prices per component equal, this is capable of solving a more general
+     * case where the per component prices are arbitrary.
      *
      * @param constraintSum integer array of current constraints that are satisfied (equivalent to Z*X).
      * @param cPrice        price of current selection (equivalent to P.X)
