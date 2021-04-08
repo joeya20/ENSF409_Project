@@ -27,31 +27,51 @@ public class MySQLService {
 
     /**
      * class constructor to set values fields and initialize database connection
-     * @param URL string of url
-     * @param USER string of username
-     * @param PASS string of password
+     * @param url string of url
+     * @param username string of username
+     * @param password string of password
      */
-    public MySQLService (String URL, String USER, String PASS) {
-        this.URL = URL;
-        this.USERNAME = USER;
-        this.PASSWORD = PASS;
+    public MySQLService (String url, String username, String password) {
+        this.URL = url;
+        this.USERNAME = username;
+        this.PASSWORD = password;
 
         //initialize connection to the SQL database, try and catch method to catch SQL exception
         try{
             this.databaseConnection = DriverManager.getConnection(this.URL, this.USERNAME, this.PASSWORD);
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("SQL expception in initializeConnection");
+            System.out.println("SQL exception in initializeConnection");
         }
         
     }
 
     /**
      * Getter method for manu
-     * @return two-dimensional string array of manu containing all the manufacturers per furniture type
+     * @return string array of manufactuers that make items in category
      */
-    public String[][] getManu() {
-        return manu;
+    public static String[] getManufacturers(String category) {
+
+        String[] result;
+
+        switch (category.toLowerCase()) {
+            case "chair":
+                result = new String[]{"Office Furnishings", "Chairs R Us", "Furniture Goods", "Fine Office Supplies"};
+                break;
+            case "desk":
+                result = new String[]{"Academic Desks", "Office Furnishings", "Furniture Goods", "Fine Office Supplies"};
+                break;
+            case "filing":
+                result = new String[]{"Office Furnishings", "Furniture Goods", "Fine Office Supplies"};
+                break;
+            case "lamp":
+                result = new String[]{"Office Furnishings", "Furniture Goods", "Fine Office Supplies"};
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid category supplied to getManufactures");
+        }
+
+        return result;
     }
 
     /**
@@ -63,11 +83,17 @@ public class MySQLService {
         List<InventoryEntity> returnList = new ArrayList<InventoryEntity>();
         
         //try and catch method to catch SQL exception
-        try {                    
-            Statement myStmt = databaseConnection.createStatement(); //statement to use database
-            results = myStmt.executeQuery("SELECT * FROM " + tableName); //selecting all rows from tableName
+        try {
+
+            /*
+             * Select all entries from the desired table
+             */
+            String query = "SELECT * FROM ?";
+            PreparedStatement myStmt  = databaseConnection.prepareStatement(query);
+            myStmt.setString(1, tableName);
+            results = myStmt.executeQuery("SELECT * FROM " + tableName);
             
-            //declaring boolean arrays of length corresponding to their table properties
+            /* Declaring boolean arrays of length corresponding to their table properties */
             while (results.next()){               
                 boolean[] properties;
                 if (tableName.equalsIgnoreCase("chair")){
@@ -80,17 +106,11 @@ public class MySQLService {
                     properties = new boolean[2]; //2 lamp properties
                 }
 
-                int i = 0;
                 //assigning boolean values in array according to table values
-                while (i < properties.length) {
-                    if (results.getNString(i + 3).equals("Y")) { //"Y" for true
-                        properties[i] = true;
-                    }
-                    else {
-                        properties[i] = false; //"N" for false
-                    }
-                    i++;
+                for (int i = 0; i < properties.length; i++) {
+                    properties[i] = results.getNString(i + 3).equals("Y");
                 }
+
                 //initializing InventoryEntity object
                 InventoryEntity nextElement = new InventoryEntity(results.getString("ID"), results.getString("Type"), properties, results.getInt("Price"), results.getString("ManuID"));
                 returnList.add(nextElement); //adding object to returnList
@@ -99,7 +119,7 @@ public class MySQLService {
             myStmt.close(); //closing statement
         } catch (SQLException ex) {
             // ex.printStackTrace();
-            System.out.println("SQL expception in getData");
+            System.out.println("SQL exception in getData");
         }
 
         //returning the list of the item inventory
@@ -117,13 +137,16 @@ public class MySQLService {
         //try and catch method to catch SQL exception                  
         try {
             //string for prepared statement to delete the items of given ID from the table given
-            String query = "DELETE FROM " + table + " WHERE ID = ?";
-            PreparedStatement myStmt = databaseConnection.prepareStatement(query); 
+            String query = "DELETE FROM ? WHERE ID = ?";
+            PreparedStatement myStmt = databaseConnection.prepareStatement(query);
+
+            /* Set desired table to delete from */
+            myStmt.setString(1, table);
 
             //for loop going through each item to be deleted
-            for (int i = 0; i < removeItems.size(); i++) {
+            for (InventoryEntity removeItem : removeItems) {
                 //setting the value of the prepared statement to the ID we want to delete
-                myStmt.setString(1, removeItems.get(i).getId());
+                myStmt.setString(2, removeItem.getId());
                 myStmt.executeUpdate(); //executing the deletion of such items in inventory in database
             }
             
@@ -131,7 +154,7 @@ public class MySQLService {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-            System.out.println("SQL expception in updateDatabases");
+            System.out.println("SQL exception in updateDatabases");
         }
 
     }    
@@ -147,7 +170,7 @@ public class MySQLService {
             databaseConnection.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("SQL expception in close");
+            System.out.println("SQL exception in close");
         }
     }
 }
