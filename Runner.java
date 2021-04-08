@@ -10,8 +10,8 @@ import java.util.*;
 
 public class Runner {
     private final static String OUTPUT_FILENAME = "OrderForm.txt";
-    private final static String USERNAME = "user";
-    private final static String PASSWORD = "pass";
+    private final static String USERNAME = "scm";
+    private final static String PASSWORD = "ensf409";
     private final static String URL = "jdbc:mysql://localhost/inventory";
     private final static File outputFile = new File(OUTPUT_FILENAME);
 
@@ -114,11 +114,7 @@ public class Runner {
         solver.solve(); //find a valid combination
         InventoryEntity[] results = solver.getRemovedItems();   //get the Items that fulfill the order, returns null for no solution
 
-<<<<<<< Updated upstream
-        if (results == null) {   //if no solution was found
-=======
         if(results == null) {   //if no solution was found
->>>>>>> Stashed changes
             String[] manufacturers = MySQLService.getManu(category);
 
             // output error message and end program
