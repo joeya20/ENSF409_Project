@@ -3,7 +3,7 @@
  * @version 1.0
  */
 
-// package edu.ucalgary.ensf409;
+package edu.ucalgary.ensf409;
 
 import java.util.*;
 import java.sql.*;
