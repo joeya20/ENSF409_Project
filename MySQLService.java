@@ -78,15 +78,12 @@ public class MySQLService {
 
         //try and catch method to catch SQL exception
         try {
-
-            /*
-             * Select all entries from the desired table
-             */
-            String query = "SELECT * FROM ?";
-            PreparedStatement myStmt = databaseConnection.prepareStatement(query);
-            myStmt.setString(1, tableName);
-            results = myStmt.executeQuery("SELECT * FROM " + tableName);
-
+            if (tableName.contains(" ")) {
+                tableName = "Invalid type";
+            }
+            Statement myStmt = databaseConnection.createStatement(); //statement to use database
+            results = myStmt.executeQuery("SELECT * FROM " + tableName); //selecting all rows from tableName
+            
             /* Declaring boolean arrays of length corresponding to their table properties */
             while (results.next()) {
                 boolean[] properties;
@@ -110,7 +107,7 @@ public class MySQLService {
 
             myStmt.close(); //closing statement
         } catch (SQLException ex) {
-            // ex.printStackTrace();
+            ex.printStackTrace();
             System.out.println("SQL exception in getData");
         }
 
@@ -129,10 +126,11 @@ public class MySQLService {
         //try and catch method to catch SQL exception                  
         try {
             //string for prepared statement to delete the items of given ID from the table given
-            String query = "DELETE FROM " + table + "  WHERE ID = ?";
-            PreparedStatement myStmt = databaseConnection.prepareStatement(query);
-
-            /* Set desired table to delete from */
+            if (table.contains(" ")) {
+                table = "Invalid type";
+            }
+            String query = "DELETE FROM " + table + " WHERE ID = ?";
+            PreparedStatement myStmt = databaseConnection.prepareStatement(query); 
 
             //for loop going through each item to be deleted
             for (InventoryEntity removeItem : removeItems) {
@@ -165,4 +163,3 @@ public class MySQLService {
         }
     }
 }
-
