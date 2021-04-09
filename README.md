@@ -1,12 +1,12 @@
 # ENSF409 Project
 ENSF 409 final project by Joey Ah-kiow, Juan Villarreal, Mustakim Rahman and Jordan Lonneberg.
 
-#Running the program
+# Running the program
 1. Navigate to the project directory containing the edu and lib directories in a cmd window.
 2. compile the java files: `javac -cp .;lib\* edu\ucalgary\ensf409\*.java`.
 3. Run `Runner`: `java -cp .;lib\* edu.ucalgary.ensf409.Runner`.
 
-#Running the tests
+# Running the tests
 1. Navigate to the project directory containing the edu and lib directories in a cmd window.
 2. compile the java files: `javac -cp .;lib\* edu\ucalgary\ensf409\*.java`.
 3. Run `inventory.sql` file in the project directory using the MySQL command line client.
